@@ -1,10 +1,27 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+const emit = defineEmits('popupHide', 'newData')
+const props = defineProps({
+    allTasks: Array
+})
+
 const nameError = ref();
 const timeError = ref();
-const taskData = {
+const taskData = reactive({
     name: '',
     time: ''
+})
+defineExpose({
+    setFormData: (dataIndex) => {
+        taskData.name = props.allTasks[dataIndex].name;
+        taskData.time = props.allTasks[dataIndex].time;
+    }
+})
+function popupClose(){
+    emit('popupHide'); 
+}
+function updateData(){
+    emit('newData', JSON.parse(JSON.stringify(taskData)));
 }
 </script>
 <template>
@@ -15,7 +32,7 @@ const taskData = {
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 
                 <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <form class="w-full">
+                    <form @submit.prevent="updateData()" class="w-full">
                     <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -43,7 +60,7 @@ const taskData = {
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                         <button type="submit" class="inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:ml-3 sm:w-auto">Update</button>
-                        <button @click="modalClose" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                        <button @click="popupClose" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
                     </div>
                 </form>
                 </div>

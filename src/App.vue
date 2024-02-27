@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import Popup from './components/Popup.vue';
 const popupActive = ref(false);
+const childFunction = ref();
+const dataIndex = ref();
 const tasks = ref([
 {
   name: 'Task 1',
@@ -24,10 +26,23 @@ const tasks = ref([
   time: 50
 }
 ]);
+const popupFalse = () => {
+  popupActive.value = false;
+}
+const callChildFunc = (index) => {
+  childFunction.value.setFormData(index);
+  dataIndex.value = index;
+  popupActive.value = true;
+}
+const taskUpdate = (newData) => {
+  tasks.value[dataIndex.value].name = newData.name;
+  tasks.value[dataIndex.value].time = newData.time;
+  popupActive.value = false;
+}
 </script>
 
 <template>
-  <Popup v-show="popupActive"/>
+  <Popup v-show="popupActive" @popup-hide="popupFalse" @new-data="taskUpdate" :all-Tasks="tasks" ref="childFunction"/>
   <section class="p-10 bg-green-200 mt-20 mx-3 md:m-auto md:mt-20 rounded-md sm:w-4/5 md:w-3/5 lg:w-2/5">
     <div class="flex flex-col">
       <h1 class="text-3xl font-semibold">Task List</h1>
